@@ -1,19 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>SimpleGTD</title>
+  <title>Fuzzymatcher.js Demo</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen">
   <script src="fuzzymatcher.js"></script>
   <script src="underscore.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>
 
+    function testPerformance() {
+      // Performance testing.
+      var perstart = new Date().getTime();
+      // Most common start to words from www.mit.edu/~ecprice/wordlist.10000
+      // Good test of performance as these would be the most common letter
+      // combinations people will be typing.
+      testPrefixes = ['co','re','in','pr','de','ma','ca','st','di','pa','tr','su','sh','ce','ex','po','mo','me','be','ba','th','mi','li','br','te','sh','sp','ho','fi','ha','en'];
+
+      // Test longer words.
+      //testPrefixes = ['apple', 'badly', 'danger', 'friend', 'greatness', 'handy', 'kindred', 'manifold', 'opinion', 'personal', 'yellow'];
+
+      testPrefixes.forEach( function (word) {
+        fuzzymatcher.query(['words'], word);
+      });
+      var perend = new Date().getTime();
+
+      var time = perend - perstart;
+      alert('Performance test took ' + time + ' miliseconds');
+    }
+
     jQuery(document).ready( function() {
       jQuery.getJSON('cities.json', function(cities) {
         window.cities = cities;
+        // Initialize the cities list within fuzzymatcher.
         fuzzymatcher.addList('cities', cities);
       });
       jQuery.getJSON('words.json', function(words) {
@@ -22,59 +42,48 @@
           return { name: word }
         });
 
+        // Initialize the words list within fuzzymatcher.
         fuzzymatcher.addList('words', processedWords);
-
-        /*
-        // Performance testing.
-        start = new Date().getTime();
-        // Most common start to words from www.mit.edu/~ecprice/wordlist.10000
-        // Good test of performance as these would be the most common letter
-        // combinations people will be typing.
-//        testPrefixes = ['co','re','in','pr','de','ma','ca','st','di','pa','tr','su','sh','ce','ex','po','mo','me','be','ba','th','mi','li','br','te','sh','sp','ho','fi','ha','en'];
-
-        // Test longer words.
-//        testPrefixes = ['apple', 'badly', 'danger', 'friend', 'greatness', 'handy', 'kindred', 'manifold', 'opinion', 'personal', 'yellow'];
-
-        testPrefixes.forEach( function (word) {
-          fuzzymatcher.matchQuery(word);
-        });
-        end = new Date().getTime();
-
-        time = end - start;
-        alert('Performance test took ' + time + ' miliseconds');
-        */
+        testPerformance();
 
       });
 
       // DEMO TODOs
 
-      // Make world city search.Show basic info then generate link to google map
-      // (or even cooler, auto-embed google map right in page...)
-      // Also, town title links to google search on Wikipedia for town name + country code + region code. Hot!
-
-      // Use underscore templates.
-
-      // Let people "select" city. If select w/ click or enter, then append it on top
-      // and train the count.
-
-      // Add normalize.css to demo plus enough to make it look pretty + some explanations.
+      // clean up todo on readme
+      // Make copies for results so custom stuff not litering original object. -- shallow copy
+      // Make signiture for querying take array or convert string to an array.
+      // Add explaination to readme.txt + demo
+      // Add sample code to readme.md
+      // Get demo running on github with google analytics.
+      // Change css output.
+      // Move example code into a "examples" folder.
 
       // Words autocomplete
+      // Listen for the keyup event on the words input field.
       $('#words input').keyup(function(e) {
+        // Start timer.
         var start = new Date().getTime();
 
-        val = $('#words input').val()
+        // Get the latest query from the input field.
+        var val = $('#words input').val()
 
-        matches = fuzzymatcher.matchQuery('words', val);
+        matches = fuzzymatcher.query('words', val);
         if (matches.length) {
           matches = matches.slice(0,40);
 
+          // Assemble the list items html to insert.
           var str = "";
           if (matches.length > 0) {
             matches.forEach( function(m) {
+              // We use the "highlighted" variable in the results.
+              // Fuzzymatcher.js adds this to each match object as a convenience.
               str += '<li>' + m.highlighted + ' | score: ' + m.match_score + '</li>';
             });
           }
+          // Add html to page using DocumentFragments which can greatly speed
+          // up inserting DOM nodes.
+          // See http://ejohn.org/blog/dom-documentfragments/
           var div = document.createElement("div");
           div.innerHTML = str;
           var fragment = document.createDocumentFragment();
@@ -83,32 +92,43 @@
           }
           $('#words .autocomplete').html(fragment);
         }
+        // If there was no results, just insert a blank string.
         else {
           $('#words .autocomplete').html('');
         }
 
+        // Calculate the time to do the matching and generate results.
         var end = new Date().getTime();
         time = end - start;
-        $('#words .stats').html("Fuzzymatch against " + words.length + " words took " + time + " miliseconds");
+        $('#words .stats').html("Searching " + words.length + " words took <strong>" + time + "</strong> miliseconds");
       });
 
       // Cities autocomplete
+      // Compile the city result box template. We're using underscore.js templates.
       compiledCityTemplate = _.template($('#cityTemplate').html());
+      // Listen for the keyup event on the cities input field.
       $('#cities input').keyup(function(e) {
-        console.log('hi');
+        // Start timer.
         var start = new Date().getTime();
 
-        val = $('#cities input').val()
+        // Grab latest query.
+        var val = $('#cities input').val()
 
-        matches = fuzzymatcher.matchQuery('cities', val);
+        matches = fuzzymatcher.query('cities', val);
         if (matches.length) {
-          matches = matches.slice(0,5);
+          // Only show the top five results as the results box take up quite
+          // a bit of space.
+          matches = matches.slice(0,4);
 
+          // Assemble the html.
           var str  = "";
           _.each(matches, function(city) {
             city.population = city.population.replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
             str += compiledCityTemplate( { city: city } )
           });
+          // Add html to page using DocumentFragments which can greatly speed
+          // up inserting DOM nodes.
+          // See http://ejohn.org/blog/dom-documentfragments/
           var div = document.createElement("div");
           div.innerHTML = str;
           var fragment = document.createDocumentFragment();
@@ -117,19 +137,21 @@
           }
           $('#cities .autocomplete').html(fragment);
         }
+        // If there was no results, just insert a blank string.
         else {
           $('#cities .autocomplete').html('');
         }
 
+        // Calculate the time to do the matching and generate results.
         var end = new Date().getTime();
         time = end - start;
-        $('#cities .stats').html("Fuzzymatch against " + cities.length + " cities took " + time + " miliseconds");
+        $('#cities .stats').html("Searching " + cities.length + " cities took <strong>" + time + "</strong> miliseconds");
       });
     });
   </script>
   <script type="text/template" id="cityTemplate">
     <li class="city">
-      <img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v3/getmap?center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" />
+      <a href="http://maps.google.com/?q=<%- city.latitude %>,<%- city.longitude %>&z=10"><img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v3/getmap?center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" /></a>
       <h3><%= city.highlighted %></h3>
       <strong>Timezone:</strong> <%= city.timezone %><br />
       <strong>Population:</strong> <%= city.population %><br />
@@ -139,9 +161,19 @@
   </script>
 </head>
 <body>
+  <a href="https://github.com/KyleAMathews/Fuzzymatcher.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
   <div id="container">
+    <h1>Fuzzymatcher.js Demo</h1>
+    <ul>
+      <li>Small (1.5 KB minified and gzipped) library for fuzzymatching strings</li>
+      <li>Highly performant on arrays up to 10,000 items</li>
+      <li>Match results are memoized</li>
+      <li>Search against one or multiple lists at a time</li>
+      <li>Perfect for creating autocomplete widgets</li>
+    </ul>
     <div id="words">
-      <h1>Words</h1>
+      <h2>Words</h2>
+     <small>Search against a list of <a href="www.mit.edu/~ecprice/wordlist.10000">10,000 common english words</a>. The "score" you see is the internal score generated to sort results. It is the sum of the word's <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> and the match position.</small><br /><br />
       <input  type="text" />
       <div class="stats"></div>
       <ul class="autocomplete">
@@ -149,7 +181,8 @@
     </div>
 
     <div id="cities">
-      <h1>Cities of the world</h1>
+      <h2>Cities of the world</h2>
+      <small>Search against the 3531 cities in the world with a population over 100,000. City data is provided by <a href="http://geonames.org">geonames.org</a>. Map images are provided by <a href="http://devblog.mapquest.com/2011/05/11/get-creative-with-the-open-static-maps-api/">MapQuest using Open Street Maps</a>.</small><br /><br />
       <input type="text" />
       <div class="stats"></div>
       <ul class="autocomplete">

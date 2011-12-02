@@ -314,10 +314,7 @@
     };
   }
 
-  _matchQuery = function(query, listName) {
-    if (!query) {
-      return false;
-    }
+  _query = function(listName, query) {
     data = lists[listName].data;
     var l = data.length;
     var num_matchs = 0;
@@ -328,7 +325,10 @@
       var position = matcher.match_main(data[i].name.toLowerCase(), query, 0);
       if (position !== -1) {
         num_matchs += 1;
-        var datum = data[i]
+        // Make a shallow copy of the object.
+        var datum = JSON.parse(JSON.stringify(data[i]));
+
+        // Calculate the match score.
         var distance = levenshtein(datum.name, query);
         var score = distance + position;
 
@@ -350,6 +350,9 @@
         datum.match_score = score;
         matches.push(datum);
       }
+      // No need to keep searching beyond 100 results. In an
+      // autocomplete widget, the results are just an aid as people
+      // narrow down on a target.
       if (num_matchs > 100) { break; }
     }
     matches.sort(function (a,b) { return a.match_score - b.match_score; } );
@@ -361,10 +364,13 @@
     // If the list already exists, delete it.
     if (lists[listName]) { delete lists[listName]; }
 
+    // You can't create a list named "all" as it's a special meta-list.
+    if (listName === "all") { return false; }
+
     // Add new list.
     lists[listName] = {
       name: listName,
-      memoized: memoize(_matchQuery),
+      memoized: memoize(_query),
       data: data
     };
 
@@ -372,10 +378,38 @@
   }
 
   // Return an array of matches for the query.
-  exports.matchQuery = function (listName, query) {
-    if (typeof lists[listName] === 'undefined') return false;
+  exports.query = function (listNames, query) {
+    // No query, no matches.
+    if (!query) { return false; }
 
-    return lists[listName].memoized(query, listName);
+    // If the listNames is "all", query all lists.
+    if (listNames === "all") {
+      var keys = [];
+      for (var key in lists) if (hasOwnProperty.call(lists, key)) keys[keys.length] = key;
+      listNames = keys;
+    }
+
+    // Make listNames an array if just a string is passed in.
+    if (typeof listNames === "string") { listNames = [listNames]; }
+
+    // Check that the lists exist.
+    var l = listNames.length;
+    for (var i = 0; i < l; i++) {
+      if (typeof lists[listNames[i]] === 'undefined') return false;
+    }
+
+    // Iterate over each list and concatenate the match arrays.
+    matches = [];
+    for (var i = 0; i < l; i++) {
+      matches = matches.concat(lists[listNames[i]].memoized(listNames[i], query));
+    }
+
+    // Sort the merged resultset.
+    if (listNames.length > 1) {
+      matches.sort(function (a,b) { return a.match_score - b.match_score; } );
+    }
+
+    return matches;
   }
 
   // Provide helper for the most common scenario where you want to insert a list of 
@@ -383,10 +417,10 @@
   //
   // @return documentFragment which can be inserted directly into the
   // page.
-  exports.htmlMatchQuery = function(listName, query, count) {
+  exports.htmlQuery = function(listName, query, count) {
     if (typeof lists[listName] === 'undefined') return false;
 
-    var matches = exports.matchQuery(listName, query);
+    var matches = exports.query(listName, query);
 
     var str = "";
     if (matches.length > 0) {
