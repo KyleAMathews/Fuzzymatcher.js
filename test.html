@@ -131,17 +131,17 @@
     <li class="city">
       <img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v3/getmap?center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" />
       <h3><%= city.highlighted %></h3>
-      <strong><a href="http://google.com/search?q=<%- city.name %>+<%- city.country_code %>+site:wikipedia.org">Wikipedia entry</a></strong><br />
       <strong>Timezone:</strong> <%= city.timezone %><br />
       <strong>Population:</strong> <%= city.population %><br />
-      <strong>Elevation:</strong> <%= city.elevation %> Meters
+      <strong>Elevation:</strong> <%= city.elevation %> Meters<br />
+      <strong><a href="http://google.com/search?q=<%- city.name %>+<%- city.country_code %>+site:wikipedia.org">Wikipedia entry</a></strong>
     </li>
   </script>
 </head>
 <body>
   <div id="container">
     <div id="words">
-      <h1>Fuzzymatch auto-complete test</h1>
+      <h1>Words</h1>
       <input  type="text" />
       <div class="stats"></div>
       <ul class="autocomplete">
@@ -149,7 +149,7 @@
     </div>
 
     <div id="cities">
-      <h1>Cities of the world auto-complete</h1>
+      <h1>Cities of the world</h1>
       <input type="text" />
       <div class="stats"></div>
       <ul class="autocomplete">
