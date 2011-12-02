@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>SimpleGTD</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen">
+  <script src="fuzzymatcher.js"></script>
+  <script src="underscore.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>
+
+    jQuery(document).ready( function() {
+      jQuery.getJSON('cities.json', function(cities) {
+        window.cities = cities;
+        fuzzymatcher.addList('cities', cities);
+      });
+      jQuery.getJSON('words.json', function(words) {
+        window.words = words;
+        processedWords = _.map(words, function (word) {
+          return { name: word }
+        });
+
+        fuzzymatcher.addList('words', processedWords);
+
+        /*
+        // Performance testing.
+        start = new Date().getTime();
+        // Most common start to words from www.mit.edu/~ecprice/wordlist.10000
+        // Good test of performance as these would be the most common letter
+        // combinations people will be typing.
+//        testPrefixes = ['co','re','in','pr','de','ma','ca','st','di','pa','tr','su','sh','ce','ex','po','mo','me','be','ba','th','mi','li','br','te','sh','sp','ho','fi','ha','en'];
+
+        // Test longer words.
+//        testPrefixes = ['apple', 'badly', 'danger', 'friend', 'greatness', 'handy', 'kindred', 'manifold', 'opinion', 'personal', 'yellow'];
+
+        testPrefixes.forEach( function (word) {
+          fuzzymatcher.matchQuery(word);
+        });
+        end = new Date().getTime();
+
+        time = end - start;
+        alert('Performance test took ' + time + ' miliseconds');
+        */
+
+      });
+
+      // DEMO TODOs
+
+      // Make world city search.Show basic info then generate link to google map
+      // (or even cooler, auto-embed google map right in page...)
+      // Also, town title links to google search on Wikipedia for town name + country code + region code. Hot!
+
+      // Use underscore templates.
+
+      // Let people "select" city. If select w/ click or enter, then append it on top
+      // and train the count.
+
+      // Add normalize.css to demo plus enough to make it look pretty + some explanations.
+
+      // Words autocomplete
+      $('#words input').keyup(function(e) {
+        var start = new Date().getTime();
+
+        val = $('#words input').val()
+
+        matches = fuzzymatcher.matchQuery('words', val);
+        if (matches.length) {
+          matches = matches.slice(0,40);
+
+          var str = "";
+          if (matches.length > 0) {
+            matches.forEach( function(m) {
+              str += '<li>' + m.highlighted + ' | score: ' + m.match_score + '</li>';
+            });
+          }
+          var div = document.createElement("div");
+          div.innerHTML = str;
+          var fragment = document.createDocumentFragment();
+          while ( div.firstChild ) {
+            fragment.appendChild( div.firstChild );
+          }
+          $('#words .autocomplete').html(fragment);
+        }
+        else {
+          $('#words .autocomplete').html('');
+        }
+
+        var end = new Date().getTime();
+        time = end - start;
+        $('#words .stats').html("Fuzzymatch against " + words.length + " words took " + time + " miliseconds");
+      });
+
+      // Cities autocomplete
+      compiledCityTemplate = _.template($('#cityTemplate').html());
+      $('#cities input').keyup(function(e) {
+        console.log('hi');
+        var start = new Date().getTime();
+
+        val = $('#cities input').val()
+
+        matches = fuzzymatcher.matchQuery('cities', val);
+        if (matches.length) {
+          matches = matches.slice(0,5);
+
+          var str  = "";
+          _.each(matches, function(city) {
+            city.population = city.population.replace(/\B(?=(?:\d{3})+(?!\d))/g, ",");
+            str += compiledCityTemplate( { city: city } )
+          });
+          var div = document.createElement("div");
+          div.innerHTML = str;
+          var fragment = document.createDocumentFragment();
+          while ( div.firstChild ) {
+            fragment.appendChild( div.firstChild );
+          }
+          $('#cities .autocomplete').html(fragment);
+        }
+        else {
+          $('#cities .autocomplete').html('');
+        }
+
+        var end = new Date().getTime();
+        time = end - start;
+        $('#cities .stats').html("Fuzzymatch against " + cities.length + " cities took " + time + " miliseconds");
+      });
+    });
+  </script>
+  <script type="text/template" id="cityTemplate">
+    <li class="city">
+      <img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v3/getmap?center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" />
+      <h3><%= city.highlighted %></h3>
+      <strong><a href="http://google.com/search?q=<%- city.name %>+<%- city.country_code %>+site:wikipedia.org">Wikipedia entry</a></strong><br />
+      <strong>Timezone:</strong> <%= city.timezone %><br />
+      <strong>Population:</strong> <%= city.population %><br />
+      <strong>Elevation:</strong> <%= city.elevation %> Meters
+    </li>
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div id="words">
+      <h1>Fuzzymatch auto-complete test</h1>
+      <input  type="text" />
+      <div class="stats"></div>
+      <ul class="autocomplete">
+      </ul>
+    </div>
+
+    <div id="cities">
+      <h1>Cities of the world auto-complete</h1>
+      <input type="text" />
+      <div class="stats"></div>
+      <ul class="autocomplete">
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>
