@@ -51,7 +51,7 @@
     // How far to search for a match (0 = exact location, 1000+ = broad match).
     // A match this many characters away from the expected location will add
     // 1.0 to the score (0.0 is a perfect match).
-    this.Match_Distance = 100;
+    this.Match_Distance = 10;
 
     // The number of bits in an int.
     this.Match_MaxBits = 32;
@@ -352,7 +352,8 @@
       }
       // No need to keep searching beyond 100 results. In an
       // autocomplete widget, the results are just an aid as people
-      // narrow down on a target.
+      // narrow down on a target so don't need to do an excaustive
+      // search.
       if (num_matchs > 100) { break; }
     }
     matches.sort(function (a,b) { return a.match_score - b.match_score; } );
