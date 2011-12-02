@@ -1,11 +1,43 @@
 A string fuzzymatching library!
 
-It was written initially to power an autocomplete widget for backbone
-models but I'm sure you can think of other creative uses.
+It was written to power an autocompletion widget for backbone.js models
+but I'm sure you can find other creative uses for it.
+
+### Features
+
+* Small (1.5 KB minified and gzipped) library for fuzzymatching strings.
+* Highly performant on arrays up to 10,000 items.
+* Search against one or multiple lists at a time.
+* Perfect for creating autocomplete widgets
+
+### How to use
+
+##### Simple example.
+
+    // Initialize a new fuzzymatcher list.
+    // words is an Array of javascript objects. For now, fuzzymatcher.js
+    // matches against a "name" property on each object. In the future,
+    // you'll be able to designate which property to match against.
+    fuzzymatcher.addList('words', words);
+
+    // Query list.
+    matches = fuzzymatcher.query('words', 'query');
+
+##### More complex example.
+
+    // Initialize two lists.
+    fuzzymatcher.addList('followers', followers);
+    fuzzymatcher.addList('following', 'following');
+
+    // Query just the followers list.
+    matches = fuzzymatcher.query('followers', 'John');
+
+    // Query both lists.
+    matches = fuzzymatcher.query(['followers', 'following'], 'John');
 
 ### TODOs
 
-Add a matchAllQuery() function that matches against all posibilities.
+* Add a matchAllQuery() function that matches against all posibilities.
 
 Warm up cache on popular queries on page load. i.e. keep track of each query where something is selected and for the top 10, run that query so results already stored.
 Not on by default as it could seriously slow down site if you do too many.
