@@ -6,7 +6,7 @@ but I'm sure you can find other creative uses for it.
 ### Features
 
 * Small (1.5 KB minified and gzipped) library for fuzzymatching strings.
-* Performant up to ~10,000 items.
+* Performant at least to ~10,000 items.
 * Match results are memoized.
 * Search against one or multiple or all lists.
 * Perfect for creating autocomplete widgets
