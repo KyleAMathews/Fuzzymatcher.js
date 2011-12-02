@@ -36,6 +36,19 @@ but I'm sure you can find other creative uses for it.
     // Query both lists.
     matches = fuzzymatcher.query(['followers', 'following'], 'John');
 
+Each returned match object is a copy of the original object. In addition
+there's the following properties added.
+
+**match_score** The internal score for the object. Calculated by adding
+the levenshtein distance and match position (i.e. how far from the start
+of the string was the match. We're assuming the match should start at
+the beginning of word. This assumption might not be true for
+non-auto-complete application). The matches array which is returned is
+already sorted by the match_score.
+
+**highlighted** The name property "highlighted" with <strong> tags on
+each letter which matches a letter in the query.
+
 ### TODOs
 
 * Add a matchAllQuery() function that matches against all posibilities.
