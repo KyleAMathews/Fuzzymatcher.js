@@ -51,7 +51,7 @@ each letter which matches a letter in the query.
 
 ### TODOs
 
-* Add a matchAllQuery() function that matches against all posibilities.
+* Write tests
 
 * Warm up cache on popular queries on page load. i.e. keep track of each query where something is selected and for the top few of these, run that query so results already stored. Don't turn on by default as it could seriously slow down site if you do too many. Do a setTimeout thing so only do one query every .1 seconds as that shouldn't affect the responsiveness of the UI too much.
 
@@ -59,6 +59,4 @@ each letter which matches a letter in the query.
 
 * Make this work with Node.js.
 
-* Allow people to override settings for matching.
-
-* Allow to override # of matches to look at.
+* Allow people to override settings.
