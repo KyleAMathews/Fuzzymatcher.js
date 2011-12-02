@@ -1,18 +1,19 @@
 A string fuzzymatching library!
 
-It was written to power an autocompletion widget for backbone.js models
+It was written to power auto-completion widgets for backbone.js models
 but I'm sure you can find other creative uses for it.
 
 ### Features
 
 * Small (1.5 KB minified and gzipped) library for fuzzymatching strings.
 * Highly performant on arrays up to 10,000 items.
+* Match results are memoized by default.
 * Search against one or multiple lists at a time.
 * Perfect for creating autocomplete widgets
 
 ### How to use
 
-##### Simple example.
+#### Simple example.
 
     // Initialize a new fuzzymatcher list.
     // words is an Array of javascript objects. For now, fuzzymatcher.js
@@ -23,7 +24,7 @@ but I'm sure you can find other creative uses for it.
     // Query list.
     matches = fuzzymatcher.query('words', 'query');
 
-##### More complex example.
+#### More complex example.
 
     // Initialize two lists.
     fuzzymatcher.addList('followers', followers);
