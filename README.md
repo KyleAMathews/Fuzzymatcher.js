@@ -12,7 +12,7 @@ but I'm sure you can find other creative uses for it.
 * Perfect for creating autocomplete widgets
 
 Note, Fuzzymatcher.js requires JSON.stringify and JSON.parse. If you're
-supporting IE6 and IE7 you'll need to provide a JSON library.
+supporting IE6 and IE7 you'll need to provide these functions.
 
 ### How to use
 
@@ -60,6 +60,6 @@ each letter which matches a letter in the query.
 
 * Add training api, simple count. if someone clicks you say match.train('project', 'id', 'query') Next search, at each query, if there's an item that's been selected before boost it's score. Subtract 2 * number of times selected from its score divided by the levenstein distance from past queries where it was selected to the current query. So for example, if it was selected before for "port" and the current query is po, subtract 1 from its score (2/2). Next time, at "po" you'd subtract 3 from its score ((2 * 1) + (2 * 1) / 2). The time after that at "po" you'd subtract 5 from its score ((2 * 2) + (2 * 1) / 2). Might have to do a max subtraction, otherwise some popular items would always show up first even if query is very different. Store this training data in localstorage if possible. Otherwise, just keep it in memory. Also let people pass in training data associated with a item. This would be especially good for mobile browsers as they're underpowered. You could precomputer results on the server and pass those in.
 
-* Make this work with Node.js.
+* Make library work with Node.js.
 
 * Allow people to override settings.
