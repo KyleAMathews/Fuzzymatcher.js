@@ -267,7 +267,7 @@
     }
 
     if ( t.length == 0 ){
-      return a.length;
+      return str2.length;
     }
 
     for ( i = 0; i <= t.length; i++ ){
