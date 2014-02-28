@@ -6,11 +6,18 @@
   // Establish the root object, `window` in the browser, or `global` on the server.
   var root = this;
 
-  // Save the previous value of the `fuzzymatcher` variable.
+  // Save the previous value of the `Fuzzymatcher` variable.
   var previousFuzzymatcher = root.fuzzymatcher;
 
-  var exports = {};
   var lists = {};
+
+  var extend = function extend(){
+    for(var i=1; i<arguments.length; i++)
+        for(var key in arguments[i])
+            if(arguments[i].hasOwnProperty(key))
+                arguments[0][key] = arguments[i][key];
+    return arguments[0];
+  };
 
   /**
    * Diff Match and Patch
@@ -41,20 +48,27 @@
    * Class containing the match methods.
    * @constructor
    */
-  function fuzzymatch() {
+  function Fuzzymatch(options) {
+    defaultOptions = {
+      // At what point is no match declared (0.0 = perfection, 1.0 = very loose).
+      Match_Threshold: 0.3,
+      // How far to search for a match (0 = exact location, 1000+ = broad match).
+      // A match this many characters away from the expected location will add
+      // 1.0 to the score (0.0 is a perfect match).
+      Match_Distance: 10,
 
-    // Defaults.
-    // Redefine these in your program to override the defaults.
+      // The number of bits in an int.
+      Match_MaxBits: 32,
+    };
 
-    // At what point is no match declared (0.0 = perfection, 1.0 = very loose).
-    this.Match_Threshold = 0.3;
-    // How far to search for a match (0 = exact location, 1000+ = broad match).
-    // A match this many characters away from the expected location will add
-    // 1.0 to the score (0.0 is a perfect match).
-    this.Match_Distance = 10;
+    if (typeof options == 'object') {
+      options = extend(defaultOptions, options);
+    }
+    else {
+      options = defaultOptions;
+    }
 
-    // The number of bits in an int.
-    this.Match_MaxBits = 32;
+    this.options = options;
   }
 
   //  MATCH FUNCTIONS
@@ -67,10 +81,10 @@
    * @param {number} loc The location to search around.
    * @return {number} Best match index or -1.
    */
-  fuzzymatch.prototype.match_main = function(text, pattern, loc) {
+  Fuzzymatch.prototype._match_main = function(text, pattern, loc) {
     // Check for null inputs.
-    if (text == null || pattern == null || loc == null) {
-      throw new Error('Null input. (match_main)');
+    if (text === null || pattern === null || loc === null) {
+      throw new Error('Null input. (_match_main)');
     }
 
     loc = Math.max(0, Math.min(loc, text.length));
@@ -85,7 +99,7 @@
       return loc;
     } else {
       // Do a fuzzy compare.
-      return this.match_bitap_(text, pattern, loc);
+      return this._match_bitap_(text, pattern, loc);
     }
   };
 
@@ -99,13 +113,13 @@
    * @return {number} Best match index or -1.
    * @private
    */
-  fuzzymatch.prototype.match_bitap_ = function(text, pattern, loc) {
-    if (pattern.length > this.Match_MaxBits) {
+  Fuzzymatch.prototype._match_bitap_ = function(text, pattern, loc) {
+    if (pattern.length > this.options.Match_MaxBits) {
       throw new Error('Pattern too long for this browser.');
     }
 
     // Initialise the alphabet.
-    var s = this.match_alphabet_(pattern);
+    var s = this._match_alphabet_(pattern);
 
     var dmp = this;  // 'this' becomes 'window' in a closure.
 
@@ -120,15 +134,15 @@
     function match_bitapScore_(e, x) {
       var accuracy = e / pattern.length;
       var proximity = Math.abs(loc - x);
-      if (!dmp.Match_Distance) {
+      if (!dmp.options.Match_Distance) {
         // Dodge divide by zero error.
         return proximity ? 1.0 : accuracy;
       }
-      return accuracy + (proximity / dmp.Match_Distance);
+      return accuracy + (proximity / dmp.options.Match_Distance);
     }
 
     // Highest score beyond which we give up.
-    var score_threshold = this.Match_Threshold;
+    var score_threshold = this.options.Match_Threshold;
     // Is there a nearby exact match? (speedup)
     var best_loc = text.indexOf(pattern, loc);
     if (best_loc != -1) {
@@ -214,7 +228,7 @@
    * @return {!Object} Hash of character locations.
    * @private
    */
-  fuzzymatch.prototype.match_alphabet_ = function(pattern) {
+  Fuzzymatch.prototype._match_alphabet_ = function(pattern) {
     var s = {};
     for (var i = 0; i < pattern.length; i++) {
       s[pattern.charAt(i)] = 0;
@@ -248,7 +262,7 @@
    * @param str2 {String} The string to be compared with str2.
    * @return {Integer} The minimum number of operations needed to transform one string into the other.
    */
-  exports.levenshtein = levenshtein = function levenshtein(str1, str2) {
+  Fuzzymatch.prototype.levenshtein = function levenshtein(str1, str2) {
      if (!str1 || !str2){
        return false;
      }
@@ -262,12 +276,12 @@
     var cost;
     var d = new Array();
 
-    if ( str.length == 0 ){
+    if ( str.length === 0 ){
       return str.length;
     }
 
-    if ( t.length == 0 ){
-      return a.length;
+    if ( t.length === 0 ){
+      return str2.length;
     }
 
     for ( i = 0; i <= t.length; i++ ){
@@ -292,12 +306,12 @@
     }
 
     return d[ t.length ][ str.length ];
-  }
+  };
 
   //memoize.js - by @addyosmani, @philogb, @mathias
   // with a few useful tweaks from @DmitryBaranovsk
   // @source http://jsperf.com/comparison-of-memoization-implementations/9
-  exports.memoize = memoize = function memoize( fn, invalidate ) {
+  Fuzzymatch.prototype.memoize = memoize = function memoize( fn, invalidate ) {
     cache = {};
     return function () {
       var args = Array.prototype.slice.call(arguments),
@@ -312,9 +326,10 @@
       return (hash in cache) ? cache[hash] :
         cache[hash] = fn.apply( this , args );
     };
-  }
+  };
 
-  _query = function(listName, query) {
+  Fuzzymatch.prototype._query = function(listName, query) {
+    self = this;
     data = lists[listName].data;
     var l = data.length;
     var num_matchs = 0;
@@ -322,18 +337,18 @@
     for (var i = 0; i < l; i++) {
       // Matching algorithm returns the position at the start of that
       // match or -1 if there isn't a match.
-      var position = matcher.match_main(data[i].name.toLowerCase(), query, 0);
+      var position = self._match_main(data[i].name.toLowerCase(), query, 0);
       if (position !== -1) {
         num_matchs += 1;
         // Make a shallow copy of the object.
         var datum = JSON.parse(JSON.stringify(data[i]));
 
         // Calculate the match score.
-        var distance = levenshtein(datum.name, query);
+        var distance = self.levenshtein(datum.name, query);
         var score = distance + position;
 
         // Add <strong> around letters which match the query.
-        var highlighted = ""
+        var highlighted = "";
         dnl = datum.name.length;
         ql = query.length;
         for ( var di = 0; di < dnl; di++ ) {
@@ -343,25 +358,26 @@
               w = "<strong>" + w + "</strong>";
               break;
             }
-          };
+          }
           highlighted += w;
-        };
+        }
         datum.highlighted = highlighted;
         datum.match_score = score;
         matches.push(datum);
       }
       // No need to keep searching beyond 100 results. In an
       // autocomplete widget, the results are just an aid as people
-      // narrow down on a target so don't need to do an excaustive
+      // narrow down on a target so don't need to do an exhaustive
       // search.
       if (num_matchs > 100) { break; }
     }
     matches.sort(function (a,b) { return a.match_score - b.match_score; } );
     return matches;
-  }
+  };
 
   // Add new list of objects to be matched against.
-  exports.addList = function(listName, data) {
+  Fuzzymatch.prototype.addList = function(listName, data) {
+    self = this;
     // If the list already exists, delete it.
     if (lists[listName]) { delete lists[listName]; }
 
@@ -371,15 +387,15 @@
     // Add new list.
     lists[listName] = {
       name: listName,
-      memoized: memoize(_query),
+      memoized: memoize(self._query).bind(this),
       data: data
     };
 
     return true;
-  }
+  };
 
   // Return an array of matches for the query.
-  exports.query = function (listNames, query) {
+  Fuzzymatch.prototype.query = function (listNames, query) {
     // No query, no matches.
     if (!query) { return false; }
 
@@ -411,17 +427,17 @@
     }
 
     return matches;
-  }
+  };
 
-  // Provide helper for the most common scenario where you want to insert a list of 
+  // Provide helper for the most common scenario where you want to insert a list of
   // <li>s with results into a ordered or unordered list.
   //
   // @return documentFragment which can be inserted directly into the
   // page.
-  exports.htmlQuery = function(listName, query, count) {
+  Fuzzymatch.prototype.htmlQuery = function(listName, query, count) {
     if (typeof lists[listName] === 'undefined') return false;
 
-    var matches = exports.query(listName, query);
+    var matches = this.query(listName, query);
 
     var str = "";
     if (matches.length > 0) {
@@ -438,10 +454,9 @@
       }
       return fragment;
     }
-  }
+  };
 
-  matcher = new fuzzymatch();
-
-  window.fuzzymatcher = exports;
+  window.fuzzymatcher = new Fuzzymatch();
+  window.Fuzzymatch = Fuzzymatch;
 
 })();

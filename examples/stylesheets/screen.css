@@ -1,0 +1,291 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle; }
+
+q, blockquote {
+  quotes: none; }
+  q:before, q:after, blockquote:before, blockquote:after {
+    content: "";
+    content: none; }
+
+a img {
+  border: none; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block; }
+
+body {
+  line-height: 1.5;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: #333333;
+  font-size: 81.25%; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  color: #222222; }
+  h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {
+    margin: 0; }
+
+h1 {
+  font-size: 3em;
+  line-height: 1;
+  margin-bottom: 0.50em; }
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 0.75em; }
+
+h3 {
+  font-size: 1.5em;
+  line-height: 1;
+  margin-bottom: 1.00em; }
+
+h4 {
+  font-size: 1.2em;
+  line-height: 1.25;
+  margin-bottom: 1.25em; }
+
+h5 {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 1.50em; }
+
+h6 {
+  font-size: 1em;
+  font-weight: bold; }
+
+p {
+  margin: 0 0 1.5em; }
+  p .left {
+    display: inline;
+    float: left;
+    margin: 1.5em 1.5em 1.5em 0;
+    padding: 0; }
+  p .right {
+    display: inline;
+    float: right;
+    margin: 1.5em 0 1.5em 1.5em;
+    padding: 0; }
+
+a {
+  text-decoration: underline;
+  color: #0066cc; }
+  a:visited {
+    color: #004c99; }
+  a:focus {
+    color: #0099ff; }
+  a:hover {
+    color: #0099ff; }
+  a:active {
+    color: #bf00ff; }
+
+blockquote {
+  margin: 1.5em;
+  color: #666666;
+  font-style: italic; }
+
+strong, dfn {
+  font-weight: bold; }
+
+em, dfn {
+  font-style: italic; }
+
+sup, sub {
+  line-height: 0; }
+
+abbr, acronym {
+  border-bottom: 1px dotted #666666; }
+
+address {
+  margin: 0 0 1.5em;
+  font-style: italic; }
+
+del {
+  color: #666666; }
+
+pre {
+  margin: 1.5em 0;
+  white-space: pre; }
+
+pre, code, tt {
+  font: 1em "andale mono", "lucida console", monospace;
+  line-height: 1.5; }
+
+li ul, li ol {
+  margin: 0; }
+
+ul, ol {
+  margin: 0 1.5em 1.5em 0;
+  padding-left: 1.5em; }
+
+ul {
+  list-style-type: disc; }
+
+ol {
+  list-style-type: decimal; }
+
+dl {
+  margin: 0 0 1.5em 0; }
+  dl dt {
+    font-weight: bold; }
+
+dd {
+  margin-left: 1.5em; }
+
+table {
+  margin-bottom: 1.4em;
+  width: 100%; }
+
+th {
+  font-weight: bold; }
+
+thead th {
+  background: #c3d9ff; }
+
+th, td, caption {
+  padding: 4px 10px 4px 5px; }
+
+table.striped tr:nth-child(even) td,
+table tr.even td {
+  background: #e5ecf9; }
+
+tfoot {
+  font-style: italic; }
+
+caption {
+  background: #eeeeee; }
+
+.quiet {
+  color: #666666; }
+
+.loud {
+  color: #111111; }
+
+body {
+  font-size: 81.25%;
+  line-height: 1.5em; }
+
+html > body {
+  font-size: 13px; }
+
+a {
+  text-decoration: none;
+  font-weight: bold; }
+  a:hover {
+    text-decoration: underline; }
+
+h1, h2, h3, h4, h5, #navigation {
+  text-rendering: optimizeLegibility; }
+
+h1 {
+  font-size: 2.769em;
+  line-height: 1.625em;
+  font-style: bolder; }
+
+h2 {
+  font-size: 1.846em;
+  line-height: 1.625em;
+  font-style: bolder; }
+
+h3 {
+  font-size: 1.615em;
+  line-height: 1.857em;
+  font-style: bolder; }
+
+h4 {
+  font-size: 1.385em;
+  line-height: 2.167em; }
+
+h5 {
+  font-size: 1.231em;
+  line-height: 2.438em; }
+
+h6 {
+  font-size: 1.077em;
+  line-height: 1.393em; }
+
+/* Force a vertical scrollbar */
+html, body {
+  min-height: 1100px;
+  background: url(../ricepaper2.png); }
+
+#container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px; }
+  #container #words {
+    display: inline;
+    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 460px; }
+  #container #cities {
+    display: inline;
+    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 460px; }
+
+#cities ul {
+  list-style: none;
+  margin: 0;
+  padding: 0; }
+  #cities ul li {
+    list-style-image: none;
+    list-style-type: none;
+    margin-left: 0px; }
+  #cities ul li {
+    overflow: hidden;
+    *zoom: 1;
+    margin-top: 1.5em;
+    padding-top: 0em;
+    padding-bottom: 0em;
+    margin-bottom: 0em;
+    -moz-box-shadow: 0px 0px 5px #333333;
+    -webkit-box-shadow: 0px 0px 5px #333333;
+    -o-box-shadow: 0px 0px 5px #333333;
+    box-shadow: 0px 0px 5px #333333;
+    background: lightyellow;
+    width: 450px;
+    text-align: center; }
+    #cities ul li h3 {
+      margin-top: 0.375em;
+      margin-bottom: 0.375em; }
+    #cities ul li img {
+      display: inline;
+      float: left; }
