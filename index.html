@@ -10,6 +10,26 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>
 
+    function testPerformance() {
+      // Performance testing.
+      var perstart = new Date().getTime();
+      // Most common start to words from www.mit.edu/~ecprice/wordlist.10000
+      // Good test of performance as these would be the most common letter
+      // combinations people will be typing.
+      testPrefixes = ['co','re','in','pr','de','ma','ca','st','di','pa','tr','su','sh','ce','ex','po','mo','me','be','ba','th','mi','li','br','te','sh','sp','ho','fi','ha','en'];
+
+      // Test longer words.
+      //testPrefixes = ['apple', 'badly', 'danger', 'friend', 'greatness', 'handy', 'kindred', 'manifold', 'opinion', 'personal', 'yellow'];
+
+      testPrefixes.forEach( function (word) {
+        fuzzymatcher.query(['words'], word);
+      });
+      var perend = new Date().getTime();
+
+      var time = perend - perstart;
+      alert('Performance test took ' + time + ' miliseconds');
+    }
+
     jQuery(document).ready( function() {
       jQuery.getJSON('cities.json', function(cities) {
         window.cities = cities;
@@ -24,6 +44,8 @@
 
         // Initialize the words list within fuzzymatcher.
         fuzzymatcher.addList('words', processedWords);
+
+        //testPerformance();
 
       });
 
@@ -119,7 +141,7 @@
   </script>
   <script type="text/template" id="cityTemplate">
     <li class="city">
-      <a href="http://maps.google.com/?q=<%- city.latitude %>,<%- city.longitude %>&z=10"><img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v3/getmap?center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" /></a>
+      <a href="http://maps.google.com/?q=<%- city.latitude %>,<%- city.longitude %>&z=10"><img width="200px" height="150px" src="http://open.mapquestapi.com/staticmap/v4/getmap?key=Kmjtd|luu7n162n1,22=o5-h61wh&center=<%- city.latitude %>,<%- city.longitude %>&zoom=10&size=200,150&sensor=false" /></a>
       <h3><%= city.highlighted %></h3>
       <strong>Timezone:</strong> <%= city.timezone %><br />
       <strong>Population:</strong> <%= city.population %><br />
@@ -127,22 +149,9 @@
       <strong><a href="http://google.com/search?q=<%- city.name %>+<%- city.country_code %>+site:wikipedia.org">Wikipedia entry</a></strong>
     </li>
   </script>
-  <script type="text/javascript">
-
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-27435781-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-
-  </script>
 </head>
 <body>
-  <a href="https://github.com/KyleAMathews/Fuzzymatcher.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
+  <a href="https://github.com/KyleAMathews/Fuzzymatcher.js"><img style="position: absolute; top: 0; right: 0; border: 0; width: 149px; height: 149px;" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-red@2x.png" alt="Fork me on GitHub"></a>
   <div id="container">
     <h1>Fuzzymatcher.js Demo</h1>
     <ul>
@@ -172,4 +181,17 @@
   </div>
 
 </body>
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-27435781-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
 </html>
