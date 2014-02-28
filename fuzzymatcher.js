@@ -334,7 +334,6 @@
     var l = data.length;
     var num_matchs = 0;
     var matches = [];
-    console.log(self);
     for (var i = 0; i < l; i++) {
       // Matching algorithm returns the position at the start of that
       // match or -1 if there isn't a match.
@@ -379,7 +378,6 @@
   // Add new list of objects to be matched against.
   Fuzzymatch.prototype.addList = function(listName, data) {
     self = this;
-    console.log(self);
     // If the list already exists, delete it.
     if (lists[listName]) { delete lists[listName]; }
 
