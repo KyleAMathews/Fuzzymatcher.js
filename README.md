@@ -20,26 +20,30 @@ supporting IE6 and IE7 you'll need to provide these functions.
 
 #### Simple example.
 
-    // Initialize a new fuzzymatcher list.
-    // words is an Array of javascript objects. For now, fuzzymatcher.js
-    // matches against a "name" property on each object. In the future,
-    // you'll be able to designate which property to match against.
-    fuzzymatcher.addList('words', words);
+````javascript
+// Initialize a new fuzzymatcher list.
+// words is an Array of javascript objects. For now, fuzzymatcher.js
+// matches against a "name" property on each object. In the future,
+// you'll be able to designate which property to match against.
+fuzzymatcher.addList('words', words);
 
-    // Query list.
-    matches = fuzzymatcher.query('words', 'query');
+// Query list.
+matches = fuzzymatcher.query('words', 'query');
+````
 
 #### More complex example.
 
-    // Initialize two lists.
-    fuzzymatcher.addList('followers', followers);
-    fuzzymatcher.addList('following', 'following');
+````javascript
+// Initialize two lists.
+fuzzymatcher.addList('followers', followers);
+fuzzymatcher.addList('following', 'following');
 
-    // Query just the followers list.
-    matches = fuzzymatcher.query('followers', 'John');
+// Query just the followers list.
+matches = fuzzymatcher.query('followers', 'John');
 
-    // Query both lists.
-    matches = fuzzymatcher.query(['followers', 'following'], 'John');
+// Query both lists.
+matches = fuzzymatcher.query(['followers', 'following'], 'John');
+````
 
 Each returned match object is a copy of the original object. In addition
 there's the following properties added.
