@@ -1,7 +1,10 @@
 A fuzzymatching library!
 
-It was written to power auto-completion widgets for backbone.js models
-but I'm sure you can find other creative uses for it.
+Useful for:
+
+* Autocomplete textfields
+* In-browser search
+* Filtering table rows or lists
 
 ### Features
 
@@ -9,7 +12,6 @@ but I'm sure you can find other creative uses for it.
 * Performant at least to ~10,000 items.
 * Match results are memoized.
 * Search against one or multiple or all lists.
-* Perfect for creating autocomplete widgets
 
 Note, Fuzzymatcher.js requires JSON.stringify and JSON.parse. If you're
 supporting IE6 and IE7 you'll need to provide these functions.
