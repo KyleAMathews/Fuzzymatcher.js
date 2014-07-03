@@ -9,7 +9,7 @@ Useful for:
 ### Features
 
 * Small (1.5 KB minified and gzipped) library for fuzzymatching strings.
-* Performant at least to ~10,000 items.
+* Performant to at least ~10,000 items.
 * Match results are memoized.
 * Search against one or multiple or all lists.
 
